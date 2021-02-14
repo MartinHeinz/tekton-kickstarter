@@ -1,0 +1,17 @@
+# https://github.com/tektoncd/pipeline/blob/master/docs/install.md#customizing-the-pipelines-controller-behavior
+# To view current config:
+# kubectl get cm feature-flags -n tekton-pipelines -o=jsonpath='{.data}' | jq .
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: tekton-pipelines
+  name: feature-flags
+  namespace: tekton-pipelines
+data:
+  disable-affinity-assistant: "false"
+  disable-home-env-overwrite: "false"
+  disable-working-directory-overwrite: "false"
+  running-in-environment-with-injected-sidecars: "true"
+  require-git-ssh-secret-known-hosts: "true"  # Note: this is "false" by default

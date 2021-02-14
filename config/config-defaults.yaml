@@ -1,0 +1,23 @@
+# https://github.com/tektoncd/pipeline/blob/master/docs/install.md#customizing-basic-execution-parameters
+# To view Example config: `kubectl get cm config-defaults -n tekton-pipelines -o=jsonpath='{ .data._example }'`
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-defaults
+data:
+  default-service-account: "pipeline"
+  default-timeout-minutes: "60"
+
+  # https://github.com/tektoncd/pipeline/blob/master/docs/podtemplates.md#supported-fields
+  default-pod-template: |
+    securityContext:  # Not a good practice, just as demonstration
+      privileged: true
+      runAsUser: 0
+    imagePullSecrets: reg-cred
+    nodeSelector:
+      kops.k8s.io/instancegroup: build-instance-group
+  default-managed-by-label-value: "tekton-pipelines"
+  default-cloud-events-sink: ""
+  default-task-run-workspace-binding: |
+    emptyDir: {}
