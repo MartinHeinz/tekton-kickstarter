@@ -1,0 +1,11 @@
+# TODO Use Volume claim template instead?
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pipeline
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi

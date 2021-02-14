@@ -1,0 +1,9 @@
+# TODO this might overwrite some existing fields
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pipeline
+imagePullSecrets:
+- name: reg-cred
+secrets:
+- name: ssh-key
