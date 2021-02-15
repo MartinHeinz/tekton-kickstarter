@@ -35,5 +35,11 @@ spec:
           name: deploy
         workspaces:
           - name: pipeline
-            persistentVolumeClaim:  # TODO Replace with Volume Claim Template
-              claimName: pipeline
+            # https://github.com/tektoncd/pipeline/blob/master/docs/workspaces.md#volumeclaimtemplate
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 1Gi

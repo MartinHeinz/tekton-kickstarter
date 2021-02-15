@@ -1,0 +1,28 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: cron-template
+spec:
+  params:
+    - name: git-repo-url
+      description: The git repository url
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: job-
+        # Alternatives:
+        # name: job-$(uid)
+        labels:
+          tekton.dev/pipeline: cron-job
+      spec:
+        params:
+          - name: git-repo-url
+            value: $(tt.params.git-repo-url)
+        pipelineRef:
+          name: cron-job
+        workspaces:
+          - name: pipeline
+            # https://github.com/tektoncd/pipeline/blob/master/docs/workspaces.md#persistentvolumeclaim
+            persistentVolumeClaim:
+              claimName: pipeline
