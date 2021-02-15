@@ -1,0 +1,12 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: git-push-binding
+spec:
+  params:
+    - name: git-repo-url
+      value: $(body.repository.ssh_url)
+    - name: commit
+      value: $(body.extensions.short_sha)
+    - name: commit-message
+      value: $(body.head_commit.message)

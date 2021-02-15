@@ -1,0 +1,39 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: git-push-template
+spec:
+  params:
+    - name: git-repo-url
+      description: Git repository SSH URL.
+    - name: commit
+      description: Git commit truncated ID.
+    - name: commit-message
+      description: Git commit message.
+
+  resourcetemplates:
+
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: deploy-
+        # Alternatives:
+        # name: deploy-$(uid)
+        # name: deploy-$(tt.params.commit)
+        labels:
+          tekton.dev/pipeline: deploy
+          commit: $(tt.params.commit)
+      spec:
+        params:
+          - name: git-repo-url
+            value: $(tt.params.git-repo-url)
+          - name: commit
+            value: $(tt.params.commit)
+          - name: commit-message
+            value: $(tt.params.commit-message)
+        pipelineRef:
+          name: deploy
+        workspaces:
+          - name: pipeline
+            persistentVolumeClaim:  # TODO Replace with Volume Claim Template
+              claimName: pipeline

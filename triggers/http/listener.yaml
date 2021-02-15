@@ -1,0 +1,24 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: http-event-listener
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - name: git-push-trigger
+      interceptors:
+        - cel:
+            # Only if event was `push`, git ref is not a tag/release and branch name is `master`
+            filter: >-
+              header.match('X-GitHub-Event', 'push') &&
+              body.ref.split('/')[1] != 'tags' &&
+              (body.ref.split('/')[2] == 'master')
+            overlays:
+                # Inject extra truncated SHA field
+              - key: short_sha
+                expression: 'body.sha.truncate(7)'
+
+      bindings:
+        - ref: git-push-binding
+      template:
+        name: git-push-template
