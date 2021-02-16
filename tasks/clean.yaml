@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1beta1
+kind: ClusterTask
+metadata:
+  annotations:
+  name: clean
+spec:
+  params:
+    - name: path
+      description: Path to directory being deleted.
+      default: "."
+  workspaces:
+    - name: source
+      mountPath: /workspace
+
+  steps:
+    - image: alpine
+      name: rmdir
+      script: |
+        #!/usr/bin/env bash
+        set -xe
+
+        rm -rf "$(workspaces.source.path)/$(params.path)"
