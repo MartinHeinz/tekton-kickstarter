@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: ClusterTask
 metadata:
   annotations:
-  name: deploy
+  name: healthcheck
 spec:
   params:
     - name: name

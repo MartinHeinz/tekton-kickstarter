@@ -1,0 +1,117 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: deploy
+spec:
+  workspaces:
+    - name: shared-data
+    - name: config
+  params:
+    - name: git-repo-url
+      type: string
+    - name: id
+      type: string
+    - name: commit
+      type: string
+    - name: commit-message
+      type: string
+  tasks:
+    - name: get-application-name
+      taskRef:
+        name: get-application-name
+        kind: ClusterTask
+      params:
+        - name: repository-url
+          value: $(params.git-repo-url)
+      workspaces:
+        - name: config
+          workspace: config
+
+    - name: generate-build-id
+      taskRef:
+        name: generate-build-id  # https://github.com/tektoncd/catalog/tree/master/task/generate-build-id/0.1
+      params:
+        - name: base-version
+          value: $(params.commit)
+
+    - name: fetch-repository
+      taskRef:
+        name: git-clone  # https://github.com/tektoncd/catalog/tree/master/task/git-clone/0.2
+        kind: ClusterTask
+      runAfter:
+        - generate-build-id
+      workspaces:
+        - name: output
+          workspace: shared-data
+      params:
+        - name: url
+          value: $(params.git-repo-url)
+        - name: revision
+          value: 'master'
+        - name: sslVerify
+          value: 'false'
+        - name: deleteExisting
+          value: 'true'
+        - name: subdirectory
+          value: build-$(tasks.generate-build-id.results.build-id)
+
+    - name: build
+      taskRef:
+        name: kaniko
+        kind: ClusterTask
+      runAfter:
+        - fetch-repository
+      workspaces:
+        - name: source
+          workspace: shared-data
+        params:
+        - name: IMAGE
+          value: docker.io/martinheinz/$(tasks.get-application-name.results.application-name)
+        - name: CONTEXT
+          value: build-$(tasks.generate-build-id.results.build-id)
+        - name: EXTRA_ARGS
+          value: '--skip-tls-verify --reproducible --label build=$(tasks.generate-build-id.results.build-id) --label message=$(params.commit-message)'
+
+    - name: deploy
+      taskRef:
+        name: deploy
+        kind: ClusterTask
+      runAfter:
+        - build
+      params:
+        - name: name
+          value: $(tasks.get-application-name.results.application-name)
+
+    - name: healthcheck
+      taskRef:
+        name: healthcheck
+        kind: ClusterTask
+      runAfter:
+        - deploy
+      params:
+        - name: name
+          value: $(tasks.get-application-name.results.application-name)
+
+    - name: notify
+      taskRef:
+        name: send-to-webhook-slack  # https://github.com/tektoncd/catalog/tree/master/task/send-to-webhook-slack
+      runAfter:
+        - healthcheck
+      params:
+        - name: webhook-secret
+          value: webhook-secret
+        - name: message
+          value: '$(tasks.get-application-name.results.application-name) successfully built and deployed.'
+
+    - name: clean
+      taskRef:
+        name: clean
+        kind: ClusterTask
+      runAfter:
+        - build
+      params:
+        - name: path
+          value: build-$(tasks.generate-build-id.results.build-id)
+      workspaces:
+        - name: source
+          workspace: shared-data

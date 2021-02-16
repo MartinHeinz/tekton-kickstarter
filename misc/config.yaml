@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: game-config
+data:
+  repo-app-mapping.yaml: |
+    'git@github.com:MartinHeinz/python-project-blueprint.git': 'sample-python-app'
