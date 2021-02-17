@@ -1,4 +1,7 @@
-configure:
+secrets:
+	@bash secrets.sh
+
+configure: secrets
 	@kubectl apply -f config/ -n tekton-pipelines
 
 cluster:
