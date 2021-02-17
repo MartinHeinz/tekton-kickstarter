@@ -10,6 +10,7 @@ data:
   default-timeout-minutes: "60"
 
   # https://github.com/tektoncd/pipeline/blob/master/docs/podtemplates.md#supported-fields
+  # TODO Test this
   default-pod-template: |
     securityContext:  # Not a good practice, just as demonstration
       privileged: true

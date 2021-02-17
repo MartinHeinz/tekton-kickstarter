@@ -1,8 +1,15 @@
+# To only create ClusterTask without testing resources:
+# kubectl apply -f tasks/healthcheck.yaml -l type=core
+#
+# To only testing resources ClusterTask:
+# kubectl apply -f tasks/healthcheck.yaml -l type=test
 apiVersion: tekton.dev/v1beta1
 kind: ClusterTask
 metadata:
   annotations:
   name: healthcheck
+  labels:
+    type: core
 spec:
   params:
     - name: name
@@ -19,3 +26,42 @@ spec:
         kubectl wait --for=condition=available --timeout=600s deployment/$(params.name) -n $(params.namespace)
         # Alternative solution:
         # https://www.jeffgeerling.com/blog/2018/updating-kubernetes-deployment-and-waiting-it-roll-out-shell-script
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    type: test
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+---
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: healthcheck
+  namespace: default
+  labels:
+    type: test
+spec:
+  taskRef:
+    name: healthcheck
+    kind: ClusterTask
+  params:
+    - name: name
+      value: nginx
+    - name: namespace
+      value: default

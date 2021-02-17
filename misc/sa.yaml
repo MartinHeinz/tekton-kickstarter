@@ -1,4 +1,3 @@
-# TODO this might overwrite some existing fields
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -7,3 +6,17 @@ imagePullSecrets:
 - name: reg-cred
 secrets:
 - name: ssh-key
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pipeline
+  namespace: default
+subjects:
+  - kind: ServiceAccount
+    name: pipeline
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: edit  # Required for rollout
+  apiGroup: rbac.authorization.k8s.io
