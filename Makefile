@@ -1,6 +1,9 @@
 secrets:
 	@bash secrets.sh
 
+task-catalog:
+	@bash catalog.sh
+
 configure: secrets
 	@kubectl apply -f config/ -n tekton-pipelines
 

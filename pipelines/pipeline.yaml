@@ -23,6 +23,8 @@ spec:
       params:
         - name: repository-url
           value: $(params.git-repo-url)
+        - name: mapping-file
+          value: repo-app-mapping.yaml
       workspaces:
         - name: config
           workspace: config
@@ -57,7 +59,7 @@ spec:
 
     - name: build
       taskRef:
-        name: kaniko
+        name: kaniko  # https://github.com/tektoncd/catalog/tree/master/task/kaniko/0.1
         kind: ClusterTask
       runAfter:
         - fetch-repository
@@ -94,7 +96,7 @@ spec:
 
     - name: notify
       taskRef:
-        name: send-to-webhook-slack  # https://github.com/tektoncd/catalog/tree/master/task/send-to-webhook-slack
+        name: send-to-webhook-slack  # https://github.com/tektoncd/catalog/tree/master/task/send-to-webhook-slack/0.1
       runAfter:
         - healthcheck
       params:
