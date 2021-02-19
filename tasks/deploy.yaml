@@ -4,6 +4,8 @@ kind: ClusterTask
 metadata:
   annotations:
   name: deploy
+  labels:
+    type: core
 spec:
   params:
     - name: name

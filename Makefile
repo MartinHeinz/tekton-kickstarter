@@ -1,7 +1,7 @@
 secrets:
 	@bash secrets.sh
 
-task-catalog:
+install-tasks:
 	@bash catalog.sh
 
 configure: secrets
