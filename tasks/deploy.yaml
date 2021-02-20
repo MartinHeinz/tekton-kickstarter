@@ -1,4 +1,8 @@
-# TODO Test this
+# To only create ClusterTask without testing resources:
+# kubectl apply -f tasks/deploy.yaml -l type=core
+#
+# To only testing resources without ClusterTask:
+# kubectl apply -f tasks/deploy.yaml -l type=test
 apiVersion: tekton.dev/v1beta1
 kind: ClusterTask
 metadata:
@@ -20,3 +24,42 @@ spec:
         set -xe
 
         kubectl rollout restart deployment/$(params.name) -n $(params.namespace)
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy
+  labels:
+    type: test
+spec:
+  selector:
+    matchLabels:
+      app: deploy
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: deploy
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+---
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: deploy
+  namespace: default
+  labels:
+    type: test
+spec:
+  taskRef:
+    name: deploy
+    kind: ClusterTask
+  params:
+    - name: name
+      value: deploy
+    - name: namespace
+      value: default
