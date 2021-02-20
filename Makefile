@@ -11,6 +11,7 @@ cluster:
 	@if [ $$(kind get clusters | grep tekton | wc -l) = 0 ]; then \
 		kind create cluster --config ./kind/kind.yaml --name tekton --image=kindest/node:v1.20.2; \
 		@kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/kind/deploy.yaml; \
+		@kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
 	fi
 	@kubectl cluster-info --context kind-tekton
 	@kubectl config set-context kind-tekton
