@@ -1,7 +1,7 @@
 # To only create ClusterTask without testing resources:
 # kubectl apply -f tasks/get-application-name.yaml -l type=core
 #
-# To only testing resources without ClusterTask:
+# To only create testing resources without ClusterTask:
 # kubectl apply -f tasks/get-application-name.yaml -l type=test
 apiVersion: tekton.dev/v1beta1
 kind: ClusterTask
