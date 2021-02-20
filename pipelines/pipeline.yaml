@@ -83,6 +83,16 @@ spec:
           - '--label'
           - 'message=$(params.commit-message)'
 
+    - name: dive
+      taskRef:
+        name: dive
+        kind: ClusterTask
+      runAfter:
+        - build
+      params:
+        - name: IMAGE
+          value: docker.io/martinheinz/$(tasks.get-application-name.results.application-name)
+
     - name: deploy
       taskRef:
         name: deploy
