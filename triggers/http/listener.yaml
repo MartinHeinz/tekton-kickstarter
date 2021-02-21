@@ -16,9 +16,9 @@ spec:
             overlays:
                 # Inject extra truncated SHA field
               - key: short_sha
-                expression: 'body.sha.truncate(7)'
+                expression: "body.head_commit.id.truncate(7)"
 
       bindings:
-        - ref: git-push-binding
+      - ref: git-push-binding
       template:
-        name: git-push-template
+        ref: git-push-template

@@ -34,7 +34,10 @@ spec:
         pipelineRef:
           name: deploy
         workspaces:
-          - name: pipeline
+          - name: config
+            configmap:
+              name: repo-app-mapping
+          - name: shared-data
             # https://github.com/tektoncd/pipeline/blob/master/docs/workspaces.md#volumeclaimtemplate
             volumeClaimTemplate:
               spec:

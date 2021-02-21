@@ -10,7 +10,7 @@ metadata:
   name: feature-flags
   namespace: tekton-pipelines
 data:
-  disable-affinity-assistant: "false"
+  disable-affinity-assistant: "true"  # TODO Task pods getting stuck in pending when set to "true"
   disable-home-env-overwrite: "false"
   disable-working-directory-overwrite: "false"
   running-in-environment-with-injected-sidecars: "true"
