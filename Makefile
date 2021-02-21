@@ -52,7 +52,10 @@ secrets:
 	@bash secrets.sh
 
 dashboard:
-	# TODO Deployment of dashboard addon
+	@kubectl apply -f https://storage.googleapis.com/tekton-releases/dashboard/latest/tekton-dashboard-release.yaml
+	@kubectl apply -f dashboard/
 
 debug:
 	# TODO target to rsh into pod of crashed TaskRun
+
+.PHONY: dashboard
