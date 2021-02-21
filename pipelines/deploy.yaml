@@ -1,8 +1,8 @@
 # To only create Pipeline without testing resources:
-# kubectl apply -f pipelines/pipeline.yaml -l type=core
+# kubectl apply -f pipelines/deploy.yaml -l type=core
 #
 # To only create testing resources without Pipeline:
-# kubectl apply -f pipelines/pipeline.yaml -l type=test
+# kubectl apply -f pipelines/deploy.yaml -l type=test
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:

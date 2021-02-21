@@ -1,6 +1,7 @@
 # https://github.com/tektoncd/pipeline/blob/master/docs/install.md#customizing-basic-execution-parameters
 # To view Example config: `kubectl get cm config-defaults -n tekton-pipelines -o=jsonpath='{ .data._example }'`
 
+# https://github.com/tektoncd/operator/issues/149
 apiVersion: v1
 kind: ConfigMap
 metadata:
