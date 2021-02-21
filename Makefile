@@ -1,7 +1,4 @@
-all: cluster operator deploy
-	cluster
-	operator
-	deploy
+all: cluster tekton deploy
 
 cluster:
 	@if [ $$(kind get clusters | grep tekton | wc -l) = 0 ]; then \
@@ -14,10 +11,9 @@ cluster:
 	@sleep 10
 	@kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
 
-operator:
-	@echo "\nDeploying Operator\n"
-	@curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.17.0/install.sh | bash -s v0.17.0
-	@kubectl create -f https://operatorhub.io/install/tektoncd-operator.yaml
+tekton:
+	@echo "\nDeploying Tekton\n"
+	@kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
 	while : ; do \
 	  kubectl get namespace tekton-pipelines && break; \
 	  sleep 5; \
@@ -26,14 +22,18 @@ operator:
 	  kubectl get cm config-defaults -n tekton-pipelines && break; \
 	  sleep 5; \
 	done
+	@kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/latest/release.yaml
+	while : ; do \
+	  kubectl get crd eventlisteners.triggers.tekton.dev -n tekton-pipelines && break; \
+	  sleep 5; \
+	done
+	while : ; do \
+	  kubectl get deployment.apps/tekton-pipelines-webhook -n tekton-pipelines && break; \
+	  sleep 5; \
+	done
+	kubectl wait --for=condition=available --timeout=90s deployment.apps/tekton-pipelines-webhook -n tekton-pipelines
 
 deploy: deploy-config deploy-triggers deploy-tasks deploy-pipelines
-	@echo "\nDeploying configs and pipelines\n"
-	deploy-config
-	@kubectl apply -f misc/
-	deploy-triggers
-	deploy-tasks
-	deploy-pipelines
 
 deploy-config:
 	@kubectl apply -f config/ -n tekton-pipelines
@@ -50,6 +50,9 @@ deploy-pipelines:
 
 secrets:
 	@bash secrets.sh
+
+dashboard:
+	# TODO Deployment of dashboard addon
 
 debug:
 	# TODO target to rsh into pod of crashed TaskRun
