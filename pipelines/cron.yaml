@@ -1,2 +1,109 @@
-# TODO Cron job pipeline
-# Scheduled PostgreSQL DB backup into PVC
+# To only create Pipeline without testing resources:
+# kubectl apply -f pipelines/cron.yaml -l type=core
+#
+# To only create testing resources without Pipeline:
+# kubectl apply -f pipelines/cron.yaml -l type=test
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: database-backup
+  labels:
+    type: core
+spec:
+  workspaces:
+    - name: backup
+  params:
+    - name: host
+      type: string
+    - name: database
+      type: string
+    - name: destination
+      type: string
+  tasks:
+    - name: inpect-pre-backup
+      params:
+        - name: path
+          value: $(params.destination)
+      taskSpec:
+        params:
+          - name: path
+            type: string
+        steps:
+          - name: echo
+            image: ubuntu
+            script: |
+              #!/usr/bin/env bash
+              set -xe
+
+              du -k "$(workspaces.backup.path)/$(params.path)" | cut -f1
+              cat "$(workspaces.backup.path)/$(params.path)" || true
+        workspaces:
+          - name: backup
+
+    - name: pg-dump
+      taskRef:
+        name: pg-dump
+        kind: ClusterTask
+      runAfter:
+        - inpect-pre-backup
+      params:
+        - name: HOST
+          value: $(params.host)
+        - name: DATABASE
+          value: $(params.database)
+        - name: DEST
+          value: $(params.destination)
+      workspaces:
+        - name: backup
+          workspace: backup
+
+    - name: inpect-post-backup
+      params:
+        - name: path
+          value: $(params.destination)
+      runAfter:
+        - pg-dump
+      taskSpec:
+        params:
+          - name: path
+            type: string
+        steps:
+          - name: echo
+            image: ubuntu
+            # TODO Files are missing - where they written by pg-dump task?
+            script: |
+              #!/usr/bin/env bash
+              set -xe
+
+              du -k "$(workspaces.backup.path)/$(params.path)" | cut -f1
+              cat "$(workspaces.backup.path)/$(params.path)"
+        workspaces:
+          - name: backup
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: database-backup
+  namespace: default
+  labels:
+    type: test
+spec:
+  params:
+    - name: host
+      value: 'postgres.default.svc.cluster.local'
+    - name: database
+      value: postgres
+    - name: destination
+      value: 'test.bak'
+  pipelineRef:
+    name: database-backup
+  workspaces:
+    - name: backup
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
