@@ -6,7 +6,6 @@ imagePullSecrets:
 - name: reg-cred
 secrets:
 - name: ssh-key
-# TODO this needs to be dockerconfigjson type
 - name: reg-cred
 ---
 apiVersion: rbac.authorization.k8s.io/v1

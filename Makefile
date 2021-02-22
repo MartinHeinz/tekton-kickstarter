@@ -46,7 +46,7 @@ deploy-tasks:
 	@bash catalog.sh
 
 deploy-pipelines:
-	@kubectl apply -f pipelines/
+	@kubectl apply -f pipelines/ -l type=core
 
 secrets:
 	@bash secrets.sh

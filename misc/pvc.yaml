@@ -1,8 +1,7 @@
-# TODO Use Volume claim template instead?
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pipeline
+  name: backup
 spec:
   accessModes:
     - ReadWriteMany

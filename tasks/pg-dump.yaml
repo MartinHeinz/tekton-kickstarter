@@ -1,0 +1,147 @@
+# To only create ClusterTask without testing resources:
+# kubectl apply -f tasks/pg-dump.yaml -l type=core
+#
+# To only create testing resources without ClusterTask:
+# kubectl apply -f tasks/pg-dump.yaml -l type=test
+apiVersion: tekton.dev/v1beta1
+kind: ClusterTask
+metadata:
+  annotations:
+  name: pg-dump
+  labels:
+    type: core
+spec:
+  params:
+    - name: HOST
+      type: string
+    - name: DATABASE
+      type: string
+    - name: DEST
+      type: string
+  workspaces:
+    - name: backup
+      mountPath: /backup
+  steps:
+    - name: pg-dump
+      image: postgres:13.2-alpine
+      env:
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: postgres-config
+              key: POSTGRES_USER
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-config
+              key: POSTGRES_PASSWORD
+      script: |
+        #!/usr/bin/env sh
+        set -xe
+
+        PGPASSWORD="$PASSWORD" pg_dump -h $(params.HOST) -Fc -U $USERNAME $(params.DATABASE) > $(workspaces.backup.path)/$(params.DEST)
+---
+# This is obviously not secure, but it's just for testing.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-config
+  labels:
+    app: postgres
+    type: test
+stringData:
+  POSTGRES_DB: postgres
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: somepass
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+    type: test
+spec:
+  ports:
+  - port: 5432
+    name: postgres
+  clusterIP: None
+  selector:
+    app: postgres
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  labels:
+    type: test
+spec:
+  serviceName: "postgres"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - secretRef:
+              name: postgres-config
+        ports:
+        - containerPort: 5432
+          name: postgredb
+        volumeMounts:
+        - name: postgredb
+          mountPath: /var/lib/postgresql/data
+          subPath: postgres
+  volumeClaimTemplates:
+  - metadata:
+      name: postgredb
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 3Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-backup
+  labels:
+    type: test
+spec:
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+---
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: pg-dump
+  namespace: default
+  labels:
+    type: test
+spec:
+  taskRef:
+    name: pg-dump
+    kind: ClusterTask
+  params:
+    - name: HOST
+      value: 'postgres.default.svc.cluster.local'
+    - name: DATABASE
+      value: postgres
+    - name: DEST
+      value: 'test.bak'
+  workspaces:
+    - name: backup
+      persistentVolumeClaim:
+        claimName: postgres-backup
