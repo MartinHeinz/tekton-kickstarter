@@ -4,5 +4,9 @@ metadata:
   name: cron-binding
 spec:
   params:
-    - name: git-repo-url
-      value: $(body.repository.ssh_url)
+    - name: HOST
+      value: $(body.host)
+    - name: DATABASE
+      value: $(body.database)
+    - name: DEST
+      value: $(body.destination)

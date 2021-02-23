@@ -4,8 +4,12 @@ metadata:
   name: cron-template
 spec:
   params:
-    - name: git-repo-url
-      description: The git repository url
+    - name: HOST
+      description: Database host.
+    - name: DATABASE
+      description: Database name.
+    - name: DEST
+      description: Backup destination (file path).
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
@@ -17,12 +21,16 @@ spec:
           tekton.dev/pipeline: cron-job
       spec:
         params:
-          - name: git-repo-url
-            value: $(tt.params.git-repo-url)
+          - name: HOST
+            value: $(tt.params.HOST)
+          - name: DATABASE
+            value: $(tt.params.DATABASE)
+          - name: DEST
+            value: $(tt.params.DEST)
         pipelineRef:
-          name: cron-job
+          name: database-backup
         workspaces:
-          - name: pipeline
+          - name: backup
             # https://github.com/tektoncd/pipeline/blob/master/docs/workspaces.md#persistentvolumeclaim
             persistentVolumeClaim:
-              claimName: pipeline
+              claimName: backup

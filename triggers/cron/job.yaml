@@ -1,1 +1,16 @@
-# TODO Add CronJob for cron pipeline
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: trigger-backup-pipeline
+spec:
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: pipeline-trigger
+              image: curlimages/curl
+              command: ["/bin/sh", "-c"]
+              args: ["curl --header \"Content-Type: application/json\" --data '{\"host\": \"postgres.default.svc.cluster.local\", \"database\": \"postgres\", \"destination\": \"dump.sql\"}' el-cron-listener.default.svc.cluster.local:8080"]
+          restartPolicy: Never

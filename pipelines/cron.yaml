@@ -13,11 +13,11 @@ spec:
   workspaces:
     - name: backup
   params:
-    - name: host
+    - name: HOST
       type: string
-    - name: database
+    - name: DATABASE
       type: string
-    - name: destination
+    - name: DEST
       type: string
   tasks:
     - name: pg-dump
@@ -26,11 +26,11 @@ spec:
         kind: ClusterTask
       params:
         - name: HOST
-          value: $(params.host)
+          value: $(params.HOST)
         - name: DATABASE
-          value: $(params.database)
+          value: $(params.DATABASE)
         - name: DEST
-          value: $(params.destination)
+          value: $(params.DEST)
       workspaces:
         - name: backup
           workspace: backup
@@ -44,11 +44,11 @@ metadata:
     type: test
 spec:
   params:
-    - name: host
+    - name: HOST
       value: 'postgres.default.svc.cluster.local'
-    - name: database
+    - name: DATABASE
       value: postgres
-    - name: destination
+    - name: DEST
       value: 'test.bak'
   pipelineRef:
     name: database-backup

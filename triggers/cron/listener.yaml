@@ -9,4 +9,4 @@ spec:
       bindings:
         - ref: cron-binding
       template:
-        name: cron-template
+        ref: cron-template
