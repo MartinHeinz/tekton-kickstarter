@@ -24,21 +24,12 @@ spec:
       params:
         - name: path
           value: $(params.destination)
-      taskSpec:
-        params:
-          - name: path
-            type: string
-        steps:
-          - name: echo
-            image: ubuntu
-            script: |
-              #!/usr/bin/env bash
-              set -xe
-
-              du -k "$(workspaces.backup.path)/$(params.path)" | cut -f1
-              cat "$(workspaces.backup.path)/$(params.path)" || true
-        workspaces:
-          - name: backup
+      taskRef:
+        name: echo
+        kind: ClusterTask
+      workspaces:
+        - name: backup
+          workspace: backup
 
     - name: pg-dump
       taskRef:
@@ -61,24 +52,12 @@ spec:
       params:
         - name: path
           value: $(params.destination)
-      runAfter:
-        - pg-dump
-      taskSpec:
-        params:
-          - name: path
-            type: string
-        steps:
-          - name: echo
-            image: ubuntu
-            # TODO Files are missing - where they written by pg-dump task?
-            script: |
-              #!/usr/bin/env bash
-              set -xe
-
-              du -k "$(workspaces.backup.path)/$(params.path)" | cut -f1
-              cat "$(workspaces.backup.path)/$(params.path)"
-        workspaces:
-          - name: backup
+      taskRef:
+        name: echo
+        kind: ClusterTask
+      workspaces:
+        - name: backup
+          workspace: backup
 
 ---
 apiVersion: tekton.dev/v1beta1
@@ -100,10 +79,5 @@ spec:
     name: database-backup
   workspaces:
     - name: backup
-      volumeClaimTemplate:
-        spec:
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 1Gi
+      persistentVolumeClaim:
+        claimName: postgres-backup

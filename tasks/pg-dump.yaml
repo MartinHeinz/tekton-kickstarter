@@ -40,6 +40,36 @@ spec:
         set -xe
 
         PGPASSWORD="$PASSWORD" pg_dump -h $(params.HOST) -Fc -U $USERNAME $(params.DATABASE) > $(workspaces.backup.path)/$(params.DEST)
+        ls -la $(workspaces.backup.path)
+---
+apiVersion: tekton.dev/v1beta1
+kind: ClusterTask
+metadata:
+  annotations:
+  name: echo
+  labels:
+    type: core
+spec:
+  params:
+    - name: path
+      type: string
+  workspaces:
+    - name: backup
+      mountPath: /backup
+  steps:
+    - name: echo
+      securityContext:
+        privileged: true
+      image: ubuntu
+      script: |
+        #!/usr/bin/env bash
+        set -xe
+
+        du -k "$(workspaces.backup.path)/$(params.path)" | cut -f1
+        cat "$(workspaces.backup.path)/$(params.path)" || true
+        touch "$(workspaces.backup.path)/test0.bak"
+        ls -la $(workspaces.backup.path)
+
 ---
 # This is obviously not secure, but it's just for testing.
 apiVersion: v1
