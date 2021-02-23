@@ -20,23 +20,10 @@ spec:
     - name: destination
       type: string
   tasks:
-    - name: inpect-pre-backup
-      params:
-        - name: path
-          value: $(params.destination)
-      taskRef:
-        name: echo
-        kind: ClusterTask
-      workspaces:
-        - name: backup
-          workspace: backup
-
     - name: pg-dump
       taskRef:
         name: pg-dump
         kind: ClusterTask
-      runAfter:
-        - inpect-pre-backup
       params:
         - name: HOST
           value: $(params.host)
@@ -47,18 +34,6 @@ spec:
       workspaces:
         - name: backup
           workspace: backup
-
-    - name: inpect-post-backup
-      params:
-        - name: path
-          value: $(params.destination)
-      taskRef:
-        name: echo
-        kind: ClusterTask
-      workspaces:
-        - name: backup
-          workspace: backup
-
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
@@ -80,4 +55,4 @@ spec:
   workspaces:
     - name: backup
       persistentVolumeClaim:
-        claimName: postgres-backup
+        claimName: backup

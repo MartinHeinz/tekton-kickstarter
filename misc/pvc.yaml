@@ -4,7 +4,7 @@ metadata:
   name: backup
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
