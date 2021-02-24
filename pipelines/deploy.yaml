@@ -64,7 +64,6 @@ spec:
         - name: subdirectory
           value: build-$(tasks.generate-build-id.results.build-id)
 
-    # TODO Image not being pushed - 504 error
     - name: build
       taskRef:
         name: kaniko
@@ -148,23 +147,25 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: python-project-blueprint
+  name: sample-python-app
   labels:
     type: test
 spec:
   selector:
     matchLabels:
-      app: python-project-blueprint
+      app: sample-python-app
   replicas: 1
   template:
     metadata:
       labels:
-        app: python-project-blueprint
+        app: sample-python-app
     spec:
       containers:
-      - name: python-project-blueprint
+      - name: sample-python-app
         imagePullPolicy: IfNotPresent
-        image: martinheinz/python-project-blueprint
+        image: martinheinz/sample-python-app
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
