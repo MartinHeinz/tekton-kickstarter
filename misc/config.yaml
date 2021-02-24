@@ -4,6 +4,7 @@ metadata:
   name: repo-app-mapping
 data:
   repo-app-mapping.yaml: |
-    'git@github.com:MartinHeinz/blog-backend.git': 'blog-backend'
     'git@github.com:kelseyhightower/nocode.git': 'nocode'
+    'git@github.com:MartinHeinz/blog-frontend.git': 'blog-backend'
+    'git@github.com:MartinHeinz/game-server-operator.git': 'game-server-operator'
     'git@github.com:MartinHeinz/python-project-blueprint.git': 'sample-python-app'

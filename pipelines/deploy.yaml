@@ -20,6 +20,9 @@ spec:
       type: string
     - name: commit-message
       type: string
+    - name: dockerfile-path
+      type: string
+      default: 'Dockerfile'
   tasks:
     - name: get-application-name
       taskRef:
@@ -61,6 +64,7 @@ spec:
         - name: subdirectory
           value: build-$(tasks.generate-build-id.results.build-id)
 
+    # TODO Image not being pushed - 504 error
     - name: build
       taskRef:
         name: kaniko
@@ -75,6 +79,8 @@ spec:
         value: docker.io/martinheinz/$(tasks.get-application-name.results.application-name)
       - name: CONTEXT
         value: build-$(tasks.generate-build-id.results.build-id)
+      - name: DOCKERFILE
+        value: $(params.dockerfile-path)
       - name: EXTRA_ARGS
         value:
           - '--skip-tls-verify'
@@ -83,6 +89,7 @@ spec:
           - 'build=$(tasks.generate-build-id.results.build-id)'
           - '--label'
           - 'message=$(params.commit-message)'
+          - '--verbosity=debug'
 
     - name: dive
       taskRef:
@@ -141,23 +148,23 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nocode
+  name: python-project-blueprint
   labels:
     type: test
 spec:
   selector:
     matchLabels:
-      app: nocode
+      app: python-project-blueprint
   replicas: 1
   template:
     metadata:
       labels:
-        app: nocode
+        app: python-project-blueprint
     spec:
       containers:
-      - name: nocode
+      - name: python-project-blueprint
         imagePullPolicy: IfNotPresent
-        image: martinheinz/nocode
+        image: martinheinz/python-project-blueprint
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
@@ -169,11 +176,13 @@ metadata:
 spec:
   params:
     - name: git-repo-url
-      value: 'git@github.com:kelseyhightower/nocode.git'
+      value: 'git@github.com:MartinHeinz/python-project-blueprint.git'
     - name: commit
-      value: '6c073b08f7987018cbb2cb9a5747c84913b3608e'
+      value: '82f492cf746c2c8e31f1ed6d71c470c698cb1396'
     - name: commit-message
-      value: 'add style guide'
+      value: 'Revert __main__ to previous version.'
+    - name: dockerfile-path
+      value: 'prod.Dockerfile'
   pipelineRef:
     name: deploy
   workspaces:

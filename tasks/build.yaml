@@ -31,7 +31,7 @@ spec:
     type: array
   - name: BUILDER_IMAGE
     description: The image on which builds will run
-    default: gcr.io/kaniko-project/executor:v1.3.0
+    default: gcr.io/kaniko-project/executor:v1.5.1-debug
   workspaces:
   - name: source
   results:
