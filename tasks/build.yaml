@@ -2,10 +2,11 @@
 # It's here because the version in catalog has EXTRA_ARGS as string which means that only single extra arg can specified
 # See also https://github.com/tektoncd/catalog/pull/566
 apiVersion: tekton.dev/v1beta1
-kind: Task
+kind: ClusterTask
 metadata:
   name: kaniko
   labels:
+    type: core
     app.kubernetes.io/version: "0.1"
   annotations:
     tekton.dev/pipelines.minVersion: "0.12.1"

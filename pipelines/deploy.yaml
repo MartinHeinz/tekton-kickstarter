@@ -64,6 +64,7 @@ spec:
     - name: build
       taskRef:
         name: kaniko
+        kind: ClusterTask
       runAfter:
         - fetch-repository
       workspaces:

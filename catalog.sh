@@ -10,7 +10,7 @@ install_custom_tasks () {
     if [ $FILENAME != "./tasks/catalog.yaml" ]; then
       kubectl apply -f $FILENAME -l type=core
     fi
-done
+  done
 }
 
 install_catalog_tasks

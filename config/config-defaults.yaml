@@ -5,20 +5,20 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: tekton-pipelines
   name: config-defaults
+  namespace: tekton-pipelines
 data:
   default-service-account: "pipeline"
   default-timeout-minutes: "60"
 
   # https://github.com/tektoncd/pipeline/blob/master/docs/podtemplates.md#supported-fields
-  # TODO Test this
   default-pod-template: |
-    securityContext:  # Not a good practice, just as demonstration
+    securityContext:
       privileged: true
       runAsUser: 0
-    imagePullSecrets: reg-cred
-    nodeSelector:
-      kops.k8s.io/instancegroup: build-instance-group
   default-managed-by-label-value: "tekton-pipelines"
   default-cloud-events-sink: ""
   default-task-run-workspace-binding: |
