@@ -48,3 +48,22 @@ deploy-nd8r5-notify-f8gha                 True        Succeeded   2m15s       2m
 
 - Optionally deploy dashboard with `make dashboard`
     - This also creates Ingress - dashboard is available at `localhost/dashboard/` (URL must include trailing `/`)
+
+## Layout
+
+Layout of files in the project:
+```
+tekton-kickstarter
+├── config    - Tekton Pipelines configurations - Defaults for Tasks and Pipelines + Feature flags
+├── dashboard - Resources for Tekton Dashboard - Ingress
+├── kind      - Custom configuration for KinD cluster for local development
+├── Makefile  - Make targets for simple provisioning and setup
+├── misc      - Miscellaneous configuration files, such as ServiceAccounts, RBAC, Secrets (SSH keys, Docker) or Quotas 
+├── pipelines - Actuals pipelines, one pipeline per file + test for each
+├── tasks     - Custom or remotely retrieved Tasks and ClusterTasks
+│   ├── catalog.yaml    - List of Tasks retrieved from remote registries (e.g. Tekton catalog)
+│   └── other-task.yaml - Other custom Tasks; one per file + test for each
+└── triggers  - Tekton Triggers files
+    ├── cron  - Cron-based pipeline triggers and CronJobs to generate events
+    └── http  - HTTP-based pipeline triggers and Ingress/Route to make it reachable
+```
