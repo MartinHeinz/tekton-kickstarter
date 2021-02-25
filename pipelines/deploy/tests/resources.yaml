@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-python-app
+spec:
+  selector:
+    matchLabels:
+      app: sample-python-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sample-python-app
+    spec:
+      containers:
+      - name: sample-python-app
+        imagePullPolicy: IfNotPresent
+        image: martinheinz/sample-python-app
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]

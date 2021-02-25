@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: deploy
+  namespace: default
+spec:
+  params:
+    - name: git-repo-url
+      value: 'git@github.com:MartinHeinz/python-project-blueprint.git'
+    - name: commit
+      value: '82f492cf746c2c8e31f1ed6d71c470c698cb1396'
+    - name: commit-message
+      value: 'Revert __main__ to previous version.'
+    - name: dockerfile-path
+      value: 'prod.Dockerfile'
+  pipelineRef:
+    name: deploy
+  workspaces:
+    - name: config
+      configmap:
+        name: repo-app-mapping
+    - name: shared-data
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi

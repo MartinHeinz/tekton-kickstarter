@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: database-backup
+spec:
+  workspaces:
+    - name: backup
+  params:
+    - name: HOST
+      type: string
+    - name: DATABASE
+      type: string
+    - name: DEST
+      type: string
+  tasks:
+    - name: pg-dump
+      taskRef:
+        name: pg-dump
+        kind: ClusterTask
+      params:
+        - name: HOST
+          value: $(params.HOST)
+        - name: DATABASE
+          value: $(params.DATABASE)
+        - name: DEST
+          value: $(params.DEST)
+      workspaces:
+        - name: backup
+          workspace: backup

@@ -1,40 +1,8 @@
-# To only create ClusterTask without testing resources:
-# kubectl apply -f tasks/clean.yaml -l type=core
-#
-# To only create testing resources without ClusterTask:
-# kubectl apply -f tasks/clean.yaml -l type=test
-apiVersion: tekton.dev/v1beta1
-kind: ClusterTask
-metadata:
-  annotations:
-  name: clean
-  labels:
-    type: core
-spec:
-  params:
-    - name: path
-      description: Path to directory being deleted.
-      default: "."
-  workspaces:
-    - name: source
-      mountPath: /workspace
-
-  steps:
-    - image: ubuntu
-      name: rmdir
-      script: |
-        #!/usr/bin/env bash
-        set -xe
-
-        rm -rf "$(workspaces.source.path)/$(params.path)"
----
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: clean
   namespace: default
-  labels:
-    type: test
 spec:
   params:
     - name: path
@@ -104,8 +72,6 @@ kind: PipelineRun
 metadata:
   name: clean
   namespace: default
-  labels:
-    type: test
 spec:
   params:
     - name: path

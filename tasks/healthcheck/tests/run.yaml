@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: healthcheck
+  namespace: default
+spec:
+  taskRef:
+    name: healthcheck
+    kind: ClusterTask
+  params:
+    - name: name
+      value: nginx
+    - name: namespace
+      value: default

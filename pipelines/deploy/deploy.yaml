@@ -1,14 +1,7 @@
-# To only create Pipeline without testing resources:
-# kubectl apply -f pipelines/deploy.yaml -l type=core
-#
-# To only create testing resources without Pipeline:
-# kubectl apply -f pipelines/deploy.yaml -l type=test
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: deploy
-  labels:
-    type: core
 spec:
   workspaces:
     - name: shared-data
@@ -143,58 +136,3 @@ spec:
       workspaces:
         - name: source
           workspace: shared-data
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: sample-python-app
-  labels:
-    type: test
-spec:
-  selector:
-    matchLabels:
-      app: sample-python-app
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: sample-python-app
-    spec:
-      containers:
-      - name: sample-python-app
-        imagePullPolicy: IfNotPresent
-        image: martinheinz/sample-python-app
-        command: [ "/bin/sh", "-c", "--" ]
-        args: [ "while true; do sleep 30; done;" ]
----
-apiVersion: tekton.dev/v1beta1
-kind: PipelineRun
-metadata:
-  name: deploy
-  namespace: default
-  labels:
-    type: test
-spec:
-  params:
-    - name: git-repo-url
-      value: 'git@github.com:MartinHeinz/python-project-blueprint.git'
-    - name: commit
-      value: '82f492cf746c2c8e31f1ed6d71c470c698cb1396'
-    - name: commit-message
-      value: 'Revert __main__ to previous version.'
-    - name: dockerfile-path
-      value: 'prod.Dockerfile'
-  pipelineRef:
-    name: deploy
-  workspaces:
-    - name: config
-      configmap:
-        name: repo-app-mapping
-    - name: shared-data
-      volumeClaimTemplate:
-        spec:
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 1Gi

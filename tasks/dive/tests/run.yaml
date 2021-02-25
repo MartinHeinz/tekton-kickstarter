@@ -1,0 +1,12 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: dive
+  namespace: default
+spec:
+  taskRef:
+    name: dive
+    kind: ClusterTask
+  params:
+    - name: IMAGE
+      value: martinheinz/python-project-blueprint:0.0.6-12-g1232208-dirty

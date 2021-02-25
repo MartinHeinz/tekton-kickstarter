@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: deploy
+  namespace: default
+spec:
+  taskRef:
+    name: deploy
+    kind: ClusterTask
+  params:
+    - name: name
+      value: deploy
+    - name: namespace
+      value: default

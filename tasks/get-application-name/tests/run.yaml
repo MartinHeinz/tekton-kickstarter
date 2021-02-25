@@ -1,0 +1,27 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: get-application-name
+  namespace: default
+spec:
+  taskRef:
+    name: get-application-name
+    kind: ClusterTask
+  params:
+    - name: repository-url
+      value: 'git@github.com:kelseyhightower/nocode.git'
+    - name: mapping-file
+      value: repo-app-mapping.yaml
+  workspaces:
+    - name: config
+      configmap:
+        name: repo-app-mapping
+---
+# Expected result:
+# kubectl get tr get-application-name -o json | jq .status.taskResults
+# [
+#   {
+#     "name": "application-name",
+#     "value": "nocode"
+#   }
+# ]

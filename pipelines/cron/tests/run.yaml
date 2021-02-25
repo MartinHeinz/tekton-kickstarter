@@ -1,0 +1,19 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: database-backup
+  namespace: default
+spec:
+  params:
+    - name: HOST
+      value: 'postgres.default.svc.cluster.local'
+    - name: DATABASE
+      value: postgres
+    - name: DEST
+      value: 'test.bak'
+  pipelineRef:
+    name: database-backup
+  workspaces:
+    - name: backup
+      persistentVolumeClaim:
+        claimName: backup

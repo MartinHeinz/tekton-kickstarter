@@ -43,9 +43,11 @@ deploy-triggers:
 	@kubectl apply -R -f triggers/
 
 deploy-tasks:
-	@bash catalog.sh
+	# TODO Adjust catalog.sh to handle new layout
+	@bash scripts/catalog.sh
 
 deploy-pipelines:
+	# TODO Adjust target to handle new layout
 	@kubectl apply -f pipelines/ -l type=core
 
 secrets:

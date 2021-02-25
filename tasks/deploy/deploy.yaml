@@ -1,0 +1,19 @@
+apiVersion: tekton.dev/v1beta1
+kind: ClusterTask
+metadata:
+  annotations:
+  name: deploy
+spec:
+  params:
+    - name: name
+      description: Deployment name.
+    - name: namespace
+      default: default
+  steps:
+    - name: rollout
+      image: bitnami/kubectl:1.20.2
+      script: |
+        #!/usr/bin/env bash
+        set -xe
+
+        kubectl rollout restart deployment/$(params.name) -n $(params.namespace)

@@ -1,0 +1,20 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: pg-dump
+  namespace: default
+spec:
+  taskRef:
+    name: pg-dump
+    kind: ClusterTask
+  params:
+    - name: HOST
+      value: 'postgres.default.svc.cluster.local'
+    - name: DATABASE
+      value: postgres
+    - name: DEST
+      value: 'test.bak'
+  workspaces:
+    - name: backup
+      persistentVolumeClaim:
+        claimName: postgres-backup

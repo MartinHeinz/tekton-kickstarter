@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1beta1
+kind: ClusterTask
+metadata:
+  annotations:
+  name: get-application-name
+spec:
+  params:
+    - name: repository-url
+      type: string
+    - name: mapping-file
+      type: string
+  steps:
+    - name: get-application-name
+      image: mikefarah/yq
+      script: |
+        #!/usr/bin/env sh
+        set -xe
+
+        yq e '."$(params.repository-url)"' /config/$(params.mapping-file) | tr -d '\012\015' > /tekton/results/application-name
+  results:
+    - name: application-name
+  workspaces:
+    - name: config
+      mountPath: /config

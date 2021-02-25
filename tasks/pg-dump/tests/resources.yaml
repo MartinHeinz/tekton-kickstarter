@@ -1,0 +1,77 @@
+# This is obviously not secure, but it's just for testing.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-config
+  labels:
+    app: postgres
+stringData:
+  POSTGRES_DB: postgres
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: somepass
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  ports:
+  - port: 5432
+    name: postgres
+  clusterIP: None
+  selector:
+    app: postgres
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  labels:
+spec:
+  serviceName: "postgres"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - secretRef:
+              name: postgres-config
+        ports:
+        - containerPort: 5432
+          name: postgredb
+        volumeMounts:
+        - name: postgredb
+          mountPath: /var/lib/postgresql/data
+          subPath: postgres
+  volumeClaimTemplates:
+  - metadata:
+      name: postgredb
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 3Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-backup
+  labels:
+spec:
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce

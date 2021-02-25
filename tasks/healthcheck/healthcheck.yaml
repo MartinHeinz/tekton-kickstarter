@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1beta1
+kind: ClusterTask
+metadata:
+  annotations:
+  name: healthcheck
+spec:
+  params:
+    - name: name
+      description: Deployment name.
+    - name: namespace
+      default: default
+  steps:
+    - name: rollout
+      image: bitnami/kubectl:1.20.2
+      script: |
+        #!/usr/bin/env bash
+        set -xe
+
+        kubectl wait --for=condition=available --timeout=600s deployment/$(params.name) -n $(params.namespace)
+        # Alternative solution:
+        # https://www.jeffgeerling.com/blog/2018/updating-kubernetes-deployment-and-waiting-it-roll-out-shell-script

@@ -1,0 +1,35 @@
+apiVersion: tekton.dev/v1beta1
+kind: ClusterTask
+metadata:
+  annotations:
+  name: pg-dump
+spec:
+  params:
+    - name: HOST
+      type: string
+    - name: DATABASE
+      type: string
+    - name: DEST
+      type: string
+  workspaces:
+    - name: backup
+      mountPath: /backup
+  steps:
+    - name: pg-dump
+      image: postgres:13.2-alpine
+      env:
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: postgres-config
+              key: POSTGRES_USER
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-config
+              key: POSTGRES_PASSWORD
+      script: |
+        #!/usr/bin/env sh
+        set -xe
+
+        PGPASSWORD="$PASSWORD" pg_dump -h $(params.HOST) -Fc -U $USERNAME $(params.DATABASE) > $(workspaces.backup.path)/$(params.DEST)

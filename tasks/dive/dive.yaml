@@ -1,15 +1,8 @@
-# To only create ClusterTask without testing resources:
-# kubectl apply -f tasks/dive.yaml -l type=core
-#
-# To only create testing resources without ClusterTask:
-# kubectl apply -f tasks/dive.yaml -l type=test
 apiVersion: tekton.dev/v1beta1
 kind: ClusterTask
 metadata:
   annotations:
   name: dive
-  labels:
-    type: core
 spec:
   params:
     - name: IMAGE
@@ -41,18 +34,3 @@ spec:
       emptyDir: {}
     - name: dind-socket
       emptyDir: {}
----
-apiVersion: tekton.dev/v1beta1
-kind: TaskRun
-metadata:
-  name: dive
-  namespace: default
-  labels:
-    type: test
-spec:
-  taskRef:
-    name: dive
-    kind: ClusterTask
-  params:
-    - name: IMAGE
-      value: martinheinz/python-project-blueprint:0.0.6-12-g1232208-dirty
