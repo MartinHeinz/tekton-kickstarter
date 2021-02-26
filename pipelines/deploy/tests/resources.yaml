@@ -16,5 +16,5 @@ spec:
       - name: sample-python-app
         imagePullPolicy: IfNotPresent
         image: martinheinz/sample-python-app
-        command: [ "/bin/sh", "-c", "--" ]
-        args: [ "while true; do sleep 30; done;" ]
+        command: ['/bin/sh', '-c', '--']
+        args: ['while true; do sleep 30; done;']

@@ -1,7 +1,6 @@
 apiVersion: tekton.dev/v1beta1
 kind: ClusterTask
 metadata:
-  annotations:
   name: deploy
 spec:
   params:
@@ -11,7 +10,7 @@ spec:
       default: default
   steps:
     - name: rollout
-      image: bitnami/kubectl:1.20.2
+      image: 'bitnami/kubectl:1.20.2'
       script: |
         #!/usr/bin/env bash
         set -xe

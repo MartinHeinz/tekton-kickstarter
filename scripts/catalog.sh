@@ -1,7 +1,7 @@
 install_catalog_tasks() {
   while IFS= read -r LINE; do
     IFS=": " read KEY VALUE <<< "$LINE"
-    kubectl apply -f $VALUE
+    kubectl apply -f $(echo "$VALUE" | tr -d "'")
   done < ./tasks/catalog.yaml
 }
 

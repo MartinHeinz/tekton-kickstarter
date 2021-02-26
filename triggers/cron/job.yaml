@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: trigger-backup-pipeline
 spec:
-  schedule: "0 2 * * *"
+  schedule: '0 2 * * *'
   jobTemplate:
     spec:
       template:
@@ -11,6 +11,7 @@ spec:
           containers:
             - name: pipeline-trigger
               image: curlimages/curl
-              command: ["/bin/sh", "-c"]
+              command: ['/bin/sh', '-c']
+              # yamllint disable-line rule:line-length rule:quoted-strings
               args: ["curl --header \"Content-Type: application/json\" --data '{\"host\": \"postgres.default.svc.cluster.local\", \"database\": \"postgres\", \"destination\": \"dump.sql\"}' el-cron-listener.default.svc.cluster.local:8080"]
           restartPolicy: Never

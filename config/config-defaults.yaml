@@ -11,15 +11,15 @@ metadata:
   name: config-defaults
   namespace: tekton-pipelines
 data:
-  default-service-account: "pipeline"
-  default-timeout-minutes: "60"
+  default-service-account: 'pipeline'
+  default-timeout-minutes: '60'
 
   # https://github.com/tektoncd/pipeline/blob/master/docs/podtemplates.md#supported-fields
   default-pod-template: |
     securityContext:
       privileged: true
       runAsUser: 0
-  default-managed-by-label-value: "tekton-pipelines"
-  default-cloud-events-sink: ""
+  default-managed-by-label-value: 'tekton-pipelines'
+  default-cloud-events-sink: ''
   default-task-run-workspace-binding: |
     emptyDir: {}

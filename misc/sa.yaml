@@ -14,25 +14,25 @@ metadata:
   name: tekton-triggers
 rules:
 # EventListeners need to be able to fetch all namespaced resources
-- apiGroups: ["triggers.tekton.dev"]
-  resources: ["eventlisteners", "triggerbindings", "triggertemplates", "triggers"]
-  verbs: ["get", "list", "watch"]
-- apiGroups: [""]
- # secrets are only needed for GitHub/GitLab interceptors
- # configmaps is needed for updating logging config
-  resources: ["configmaps", "secrets"]
-  verbs: ["get", "list", "watch"]
- # Permissions to create resources in associated TriggerTemplates
-- apiGroups: ["tekton.dev"]
-  resources: ["pipelineruns", "pipelineresources", "taskruns"]
-  verbs: ["create"]
-- apiGroups: [""]
-  resources: ["serviceaccounts"]
-  verbs: ["impersonate"]
-- apiGroups: ["policy"]
-  resources: ["podsecuritypolicies"]
-  resourceNames: ["tekton-triggers"]
-  verbs: ["use"]
+- apiGroups: ['triggers.tekton.dev']
+  resources: ['eventlisteners', 'triggerbindings', 'triggertemplates', 'triggers']
+  verbs: ['get', 'list', 'watch']
+- apiGroups: ['']
+  # secrets are only needed for GitHub/GitLab interceptors
+  # configmaps is needed for updating logging config
+  resources: ['configmaps', 'secrets']
+  verbs: ['get', 'list', 'watch']
+  # Permissions to create resources in associated TriggerTemplates
+- apiGroups: ['tekton.dev']
+  resources: ['pipelineruns', 'pipelineresources', 'taskruns']
+  verbs: ['create']
+- apiGroups: ['']
+  resources: ['serviceaccounts']
+  verbs: ['impersonate']
+- apiGroups: ['policy']
+  resources: ['podsecuritypolicies']
+  resourceNames: ['tekton-triggers']
+  verbs: ['use']
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -52,10 +52,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: tekton-triggers
 rules:
-  # EventListeners need to be able to fetch any clustertriggerbindings
-- apiGroups: ["triggers.tekton.dev"]
-  resources: ["clustertriggerbindings"]
-  verbs: ["get", "list", "watch"]
+# EventListeners need to be able to fetch any clustertriggerbindings
+- apiGroups: ['triggers.tekton.dev']
+  resources: ['clustertriggerbindings']
+  verbs: ['get', 'list', 'watch']
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

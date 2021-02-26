@@ -14,9 +14,9 @@ spec:
               body.ref.split('/')[1] != 'tags' &&
               (body.ref.split('/')[2] == 'master')
             overlays:
-                # Inject extra truncated SHA field
+              # Inject extra truncated SHA field
               - key: short_sha
-                expression: "body.head_commit.id.truncate(7)"
+                expression: 'body.head_commit.id.truncate(7)'
 
       bindings:
       - ref: git-push-binding

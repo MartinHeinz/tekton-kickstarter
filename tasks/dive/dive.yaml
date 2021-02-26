@@ -1,14 +1,13 @@
 apiVersion: tekton.dev/v1beta1
 kind: ClusterTask
 metadata:
-  annotations:
   name: dive
 spec:
   params:
     - name: IMAGE
       description: Name (reference) of the image to analyze.
   steps:
-    - image: wagoodman/dive:latest
+    - image: 'wagoodman/dive:latest'
       name: dive
       env:
         - name: CI
@@ -20,7 +19,7 @@ spec:
         - mountPath: /var/run/
           name: dind-socket
   sidecars:
-    - image: docker:18.05-dind
+    - image: 'docker:18.05-dind'
       name: server
       securityContext:
         privileged: true

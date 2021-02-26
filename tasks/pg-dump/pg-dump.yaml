@@ -1,7 +1,6 @@
 apiVersion: tekton.dev/v1beta1
 kind: ClusterTask
 metadata:
-  annotations:
   name: pg-dump
 spec:
   params:
@@ -16,7 +15,7 @@ spec:
       mountPath: /backup
   steps:
     - name: pg-dump
-      image: postgres:13.2-alpine
+      image: 'postgres:13.2-alpine'
       env:
         - name: USERNAME
           valueFrom:

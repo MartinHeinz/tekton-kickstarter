@@ -1,4 +1,4 @@
-git-clone: https://raw.githubusercontent.com/tektoncd/catalog/master/task/git-clone/0.2/git-clone.yaml
-send-to-webhook-slack: https://raw.githubusercontent.com/tektoncd/catalog/master/task/send-to-webhook-slack/0.1/send-to-webhook-slack.yaml
-skopeo-copy: https://raw.githubusercontent.com/tektoncd/catalog/master/task/skopeo-copy/0.1/skopeo-copy.yaml
-buildid: https://raw.githubusercontent.com/tektoncd/catalog/master/task/generate-build-id/0.1/generate-build-id.yaml
+git-clone: 'https://raw.githubusercontent.com/tektoncd/catalog/master/task/git-clone/0.2/git-clone.yaml'
+send-to-webhook-slack: 'https://raw.githubusercontent.com/tektoncd/catalog/master/task/send-to-webhook-slack/0.1/send-to-webhook-slack.yaml'
+skopeo-copy: 'https://raw.githubusercontent.com/tektoncd/catalog/master/task/skopeo-copy/0.1/skopeo-copy.yaml'
+buildid: 'https://raw.githubusercontent.com/tektoncd/catalog/master/task/generate-build-id/0.1/generate-build-id.yaml'

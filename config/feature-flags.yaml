@@ -10,8 +10,8 @@ metadata:
   name: feature-flags
   namespace: tekton-pipelines
 data:
-  disable-affinity-assistant: "false"
-  disable-home-env-overwrite: "false"
-  disable-working-directory-overwrite: "false"
-  running-in-environment-with-injected-sidecars: "true"
-  require-git-ssh-secret-known-hosts: "true"  # Note: this is "false" by default
+  disable-affinity-assistant: 'false'
+  disable-home-env-overwrite: 'false'
+  disable-working-directory-overwrite: 'false'
+  running-in-environment-with-injected-sidecars: 'true'
+  require-git-ssh-secret-known-hosts: 'true'  # Note: this is 'false' by default

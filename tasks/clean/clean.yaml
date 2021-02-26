@@ -1,13 +1,12 @@
 apiVersion: tekton.dev/v1beta1
 kind: ClusterTask
 metadata:
-  annotations:
   name: clean
 spec:
   params:
     - name: path
       description: Path to directory being deleted.
-      default: "."
+      default: '.'
   workspaces:
     - name: source
       mountPath: /workspace

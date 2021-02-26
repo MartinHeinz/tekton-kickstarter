@@ -9,4 +9,4 @@ spec:
     kind: ClusterTask
   params:
     - name: IMAGE
-      value: martinheinz/python-project-blueprint:0.0.6-12-g1232208-dirty
+      value: 'martinheinz/python-project-blueprint:0.0.6-12-g1232208-dirty'

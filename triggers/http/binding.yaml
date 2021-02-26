@@ -7,6 +7,6 @@ spec:
     - name: git-repo-url
       value: $(body.repository.ssh_url)
     - name: commit
-      value: "$(extensions.short_sha)"
+      value: $(extensions.short_sha)
     - name: commit-message
       value: $(body.head_commit.message)

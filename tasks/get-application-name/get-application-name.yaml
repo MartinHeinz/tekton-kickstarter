@@ -1,7 +1,6 @@
 apiVersion: tekton.dev/v1beta1
 kind: ClusterTask
 metadata:
-  annotations:
   name: get-application-name
 spec:
   params:

@@ -6,9 +6,9 @@ kind: ClusterTask
 metadata:
   name: kaniko
   labels:
-    app.kubernetes.io/version: "0.1"
+    app.kubernetes.io/version: '0.1'
   annotations:
-    tekton.dev/pipelines.minVersion: "0.12.1"
+    tekton.dev/pipelines.minVersion: '0.12.1'
     tekton.dev/tags: image-build
 spec:
   description: >-
@@ -30,7 +30,7 @@ spec:
     type: array
   - name: BUILDER_IMAGE
     description: The image on which builds will run
-    default: gcr.io/kaniko-project/executor:v1.5.1-debug
+    default: 'gcr.io/kaniko-project/executor:v1.5.1-debug'
   workspaces:
   - name: source
   results:
@@ -60,16 +60,17 @@ spec:
       runAsUser: 0
   - name: write-digest
     workingDir: $(workspaces.source.path)
-    image: gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/imagedigestexporter:v0.16.2
-    # output of imagedigestexport [{"key":"digest","value":"sha256:eed29..660","resourceRef":{"name":"myrepo/myimage"}}]
-    command: ["/ko-app/imagedigestexporter"]
+    image: 'gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/imagedigestexporter:v0.16.2'
+    # output of imagedigestexport [{'key':'digest','value':'sha256:eed29..660','resourceRef':{'name':'myrepo/myimage'}}]
+    command: ['/ko-app/imagedigestexporter']
     args:
-    - -images=[{"name":"$(params.IMAGE)","type":"image","url":"$(params.IMAGE)","digest":"","OutputImageDir":"$(workspaces.source.path)/$(params.CONTEXT)/image-digest"}]
+    # yamllint disable-line rule:quoted-strings
+    - -images=[{'name':'$(params.IMAGE)','type':'image','url':'$(params.IMAGE)','digest':'','OutputImageDir':'$(workspaces.source.path)/$(params.CONTEXT)/image-digest'}]
     - -terminationMessagePath=$(params.CONTEXT)/image-digested
     securityContext:
       runAsUser: 0
   - name: digest-to-results
     workingDir: $(workspaces.source.path)
-    image: docker.io/stedolan/jq@sha256:a61ed0bca213081b64be94c5e1b402ea58bc549f457c2682a86704dd55231e09
+    image: 'docker.io/stedolan/jq@sha256:a61ed0bca213081b64be94c5e1b402ea58bc549f457c2682a86704dd55231e09'
     script: |
       cat $(params.CONTEXT)/image-digested | jq '.[0].value' -rj | tee /tekton/results/IMAGE-DIGEST
