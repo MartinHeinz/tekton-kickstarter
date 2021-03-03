@@ -11,6 +11,7 @@ Scripts, configs and resources for quick and easy setup of Tekton Pipelines.
 Also recommended:
 
 - `tkn`
+- `yamllint`
 
 ## Setting Up
 

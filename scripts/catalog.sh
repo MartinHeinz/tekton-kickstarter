@@ -15,4 +15,5 @@ install_custom_tasks() {
 
 install_catalog_tasks
 install_custom_tasks
+echo
 kubectl get tasks,clustertasks
