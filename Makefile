@@ -1,5 +1,5 @@
-BLUE='\033[0;34m'
-NC='\033[0m'  # No Color
+BLUE=\033[0;34m
+NC=\033[0m  # No Color
 
 all: cluster tekton deploy
 
@@ -21,8 +21,8 @@ tekton:
 	@while : ; do \
 	  kubectl get namespace tekton-pipelines && break; \
 	  sleep 5; \
-	done; \
-	while : ; do \
+	done;
+	@while : ; do \
 	  kubectl get cm config-defaults -n tekton-pipelines && break; \
 	  sleep 5; \
 	done
