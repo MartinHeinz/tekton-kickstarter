@@ -87,3 +87,26 @@ spec:
           resources:
             requests:
               storage: 1Gi
+---
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: clean
+  namespace: default
+spec:
+  params:
+    - name: path
+      value: 'somedir'
+  taskRef:
+    name: clean
+    kind: ClusterTask
+  workspaces:
+    - name: source
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+
