@@ -1,5 +1,9 @@
 # Tekton CI/CD Kickstarter
 
+<p align="center">
+<img src="cover.png" alt="Cover Image"></img>
+</p>
+
 Scripts, configs and resources for quick and easy setup of Tekton Pipelines.
 
 ## Prerequisites
