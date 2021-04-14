@@ -10,7 +10,8 @@ Scripts, configs and resources for quick and easy setup of Tekton Pipelines.
 
 You can find more information about this project/repository and how to use it in following blog post:
 
-- [Cloud Native CI/CD with Tekton - Laying The Foundation](https://martinheinz.dev/blog/45)
+- [Cloud Native CI/CD with Tekton  -  Laying The Foundation](https://martinheinz.dev/blog/45)
+- [Cloud Native CI/CD with Tekton - Building Custom Tasks](https://martinheinz.dev/blog/47)
 
 ## Prerequisites
 
