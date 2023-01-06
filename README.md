@@ -6,6 +6,12 @@
 
 Scripts, configs and resources for quick and easy setup of Tekton Pipelines.
 
+-----
+
+If you find this useful, you can support me on Ko-Fi (Donations are always appreciated, but never required):
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K6F4XN6)
+
 ## Blog Posts - More Information About This Repo
 
 You can find more information about this project/repository and how to use it in following blog post:
